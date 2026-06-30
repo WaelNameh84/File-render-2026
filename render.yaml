@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: attendx-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: echo "No build needed - using pre-built files"
+    startCommand: node --enable-source-maps index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_EMAIL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: APP_URL
+        sync: false
