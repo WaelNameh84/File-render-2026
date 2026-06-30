@@ -1,11 +1,13 @@
 {
-  "name": "attendx-backend",
+  "name": "backend-service",
   "version": "1.0.0",
   "type": "module",
-  "engines": {
-    "node": ">=20"
+  "dependencies": {
+    "@google-cloud/storage": "^7.14.0",
+    "nodemailer": "^9.0.1",
+    "pino": "^9.0.0"
   },
   "scripts": {
-    "start": "node --enable-source-maps index.mjs"
+    "start": "node index.mjs"
   }
 }
