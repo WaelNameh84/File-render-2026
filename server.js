@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// إعداد Brevo API
+// إعداد Brevo API باستخدام المتغير الذي سنضعه في Render
 const apiInstance = new brevo.TransactionalEmailsApi();
 apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
@@ -34,7 +34,7 @@ app.post('/api/ask-gemini', async (req, res) => {
   }
 });
 
-// المسار الجديد لإرسال الإيميل عبر API
+// المسار المحدث لإرسال الإيميل عبر API
 app.post('/api/send-email', async (req, res) => {
   const { to, subject, text } = req.body;
   
