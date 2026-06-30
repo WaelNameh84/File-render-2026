@@ -46,7 +46,8 @@ app.post('/api/send-email', async (req, res) => {
     const sendSmtpEmail = new brevo.SendSmtpEmail();
     sendSmtpEmail.subject = subject;
     sendSmtpEmail.textContent = text;
-    sendSmtpEmail.sender = { "name": "AttendX", "email": "info@attendx.com" }; 
+    // تم التعديل هنا لاستخدام إيميلك الشخصي الموثق في Brevo
+    sendSmtpEmail.sender = { "name": "AttendX", "email": "nemahwael3@gmail.com" }; 
     sendSmtpEmail.to = [{ "email": to }];
 
     await apiInstance.sendTransacEmail(sendSmtpEmail);
