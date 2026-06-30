@@ -3,14 +3,13 @@
   "version": "1.0.0",
   "description": "AttendX HR & Attendance System — Backend API",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "generate-vapid": "node scripts/generate-vapid.mjs"
+    "dev": "tsx watch server.js",
+    "start": "node server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.10",
