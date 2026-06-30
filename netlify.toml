@@ -1,0 +1,22 @@
+# ============================================================
+#  AttendX — Netlify Configuration (Frontend)
+#
+#  BEFORE DEPLOYING:
+#  1. Set VITE_API_URL to your backend URL in Netlify's UI:
+#     Site Settings → Environment Variables
+#  2. Set VITE_VAPID_PUBLIC_KEY if using push notifications
+# ============================================================
+
+[build]
+  base    = "frontend"
+  command = "npm install && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA routing — redirect all paths to index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
