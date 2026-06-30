@@ -1,11 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// تأكد من تحميل ملف الإعدادات بشكل صحيح
-dotenv.config({ path: 'env.local' });
 
 const app = express();
 
@@ -14,10 +10,11 @@ app.use(cors());
 app.use(express.json());
 
 // إعداد خدمة البريد الإلكتروني
+// سيقوم السيرفر هنا بقراءة القيم من إعدادات Render (Environment Variables) مباشرة
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT) || 587,
-  secure: false, // true لـ 465, false للمنافذ الأخرى
+  secure: false, 
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
@@ -38,7 +35,7 @@ app.post('/api/ask-gemini', async (req, res) => {
     const { prompt } = req.body;
     if (!prompt) return res.status(400).json({ error: "النص مطلوب" });
     
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // تم التحديث لنموذج أسرع
     const result = await model.generateContent(prompt);
     res.json({ response: result.response.text() });
   } catch (error) {
@@ -66,5 +63,6 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+// إعداد المنفذ (Port) بشكل صحيح لـ Render
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
