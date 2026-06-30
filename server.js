@@ -1,35 +1,24 @@
 import express from 'express';
 import cors from 'cors';
-import nodemailer from 'nodemailer';
+import * as brevo from '@getbrevo/brevo'; 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const app = express();
 
-// إعدادات الـ Middleware الأساسية
 app.use(cors());
 app.use(express.json());
 
-// إعداد خدمة البريد الإلكتروني (Nodemailer)
-// الكود هنا يقرأ مباشرة من إعدادات Render (Environment Variables)
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST, // تم ضبطه في Render
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: false, // يعمل مع المنفذ 587
-  auth: {
-    user: process.env.SMTP_USER, // تم ضبطه في Render
-    pass: process.env.SMTP_PASS, // كود الـ 16 حرفاً من جوجل
-  },
-});
+// إعداد Brevo API
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
 // إعداد Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-// مسار تجريبي للتأكد أن السيرفر يعمل
 app.get('/', (req, res) => {
   res.status(200).json({ status: "success", message: "AttendX API is online!" });
 });
 
-// مسار معالجة طلبات المساعد الذكي
 app.post('/api/ask-gemini', async (req, res) => {
   try {
     const { prompt } = req.body;
@@ -45,7 +34,7 @@ app.post('/api/ask-gemini', async (req, res) => {
   }
 });
 
-// المسار المسؤول عن إرسال الإيميلات (تم تحسينه للعمل مع Gmail)
+// المسار الجديد لإرسال الإيميل عبر API
 app.post('/api/send-email', async (req, res) => {
   const { to, subject, text } = req.body;
   
@@ -54,23 +43,21 @@ app.post('/api/send-email', async (req, res) => {
   }
 
   try {
-    const mailOptions = {
-      from: `"AttendX System" <${process.env.SMTP_USER}>`,
-      to,
-      subject,
-      text
-    };
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.textContent = text;
+    sendSmtpEmail.sender = { "name": "AttendX", "email": "info@attendx.com" }; 
+    sendSmtpEmail.to = [{ "email": to }];
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully: %s", info.messageId);
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    
     res.json({ message: "تم إرسال البريد بنجاح!" });
   } catch (error) {
-    console.error("Email Sending Error:", error);
+    console.error("Brevo API Error:", error);
     res.status(500).json({ error: "حدث خطأ أثناء محاولة إرسال البريد" });
   }
 });
 
-// تشغيل السيرفر
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`AttendX Server is running on port ${PORT}`);
