@@ -1,12 +1,11 @@
 {
-  "name": "attendx-server",
+  "name": "attendx-backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "server.js",
-  "dependencies": {
-    "express": "^4.17.1",
-    "cors": "^2.8.5",
-    "@getbrevo/brevo": "^2.2.0",
-    "@google/generative-ai": "^0.1.0"
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node --enable-source-maps index.mjs"
   }
 }
